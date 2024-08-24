@@ -1,216 +1,120 @@
-# FastAPI and PostgreSQL Setup Guide
+py -3 -m venv venv change the python via View and python select
+Interprter venv\\Scripts\\activate.bat pip install fastapi python.exe -m
+pip install \--upgrade pip pip freeze =\> packages installed pip install
+uvicorn pip install bcrypt==4.2.0 pip install passlib==1.7.4 pip install
+email-validator pip install python-jose\[cryptography\] uvicorn main:app
+uvicorn app.main:app \--reload automatically restart the server after
+new change. Install the Postman Go to Body section and select the json
+to post some data. fastapi work from start to end, so be careful if you
+put some variable restriction in above code. 422 Unprocessable Entity:
+when wrong data, or data types send to the server. User - dbms -db ,
+dbms basicaaly connect with db engine and provide the response Data
+Types: Numeric: int, decimal, precision text: varchar,textbool: boolean
+sequence: array
 
-This guide provides step-by-step instructions to set up a FastAPI application with a PostgreSQL database. Follow these instructions to create a virtual environment, install necessary dependencies, configure PostgreSQL, and run the FastAPI server.
+add limitations: add primary key to get all entities, like user id. make
+entry of column uniqe with UNIQUE make it sure that entries is not null
+via NOT NULL
 
-## Setup Instructions
+connect via cmd: \"C:\\Program Files\\PostgreSQL\\15\\bin\\psql.exe\" -U
+postgres
 
-* **Create a Virtual Environment**  
-  Create a virtual environment to manage project dependencies:
+Reset the postgresql password: Open pg_hba.conf in a text editor with
+administrator privileges (e.g., Notepad) at C:\\Program
+Files\\PostgreSQL\\15\\data\\pg_hba.conf
 
-  ```bash
-  py -3 -m venv venv
-Change the Python Interpreter
-Change the Python interpreter via View -> Command Palette -> Python: Select Interpreter in your code editor.
+local all all 127.0.0.1/32 trust host all all 127.0.0.1/32 trust host
+all all ::1/128 trust
 
-Activate the Virtual Environment
-Activate the virtual environment:
+Restart the postgres via, Win + R search services.msc and restrt the
+process named PostgreSQL-15
 
-Windows:
-bash
-Copy code
-venv\Scripts\activate.bat
-Install Dependencies
-Install the required Python packages:
+connect to the server again via \"C:\\Program
+Files\\PostgreSQL\\16\\bin\\psql.exe\" -U postgres ALTER USER postgres
+PASSWORD \'newpassword\';
 
-bash
-Copy code
-pip install fastapi
-python.exe -m pip install --upgrade pip
-pip install uvicorn
-pip install bcrypt==4.2.0
-pip install passlib==1.7.4
-pip install email-validator
-pip install python-jose[cryptography]
-Check Installed Packages
-To see the list of installed packages, run:
+Re-edit pg_hba.conf Open pg_hba.conf again and change trust back to md5
+(or whatever method was used before): local all all 127.0.0.1/32
+scram-sha-256 host all all 127.0.0.1/32 scram-sha-256 host all all
+::1/128 scram-sha-256
 
-bash
-Copy code
-pip freeze
-Run the FastAPI Server
-To run the FastAPI server, use:
+connect to db with new password go to db, schema, table and create a
+table named products name = character varrying, not null price =
+integer, not null bigint and small int = tell the bit of the value
 
-bash
-Copy code
-uvicorn main:app
-To automatically restart the server after any changes, use:
+\-- Table: public.products
 
-bash
-Copy code
-uvicorn app.main:app --reload
-Install Postman
-Install Postman to test your API endpoints. Go to the Body section in Postman and select JSON to post some data.
+\-- DROP TABLE IF EXISTS public.products;
 
-Handling Errors in FastAPI
-FastAPI processes requests from start to end, so be careful if you put any variable restrictions in your code.
+CREATE TABLE IF NOT EXISTS public.products ( \"Name\" character varying
+COLLATE pg_catalog.\"default\" NOT NULL, \"Price\" integer NOT NULL, id
+integer NOT NULL DEFAULT nextval(\'products_id_seq\'::regclass),
+CONSTRAINT products_pkey PRIMARY KEY (id) )
 
-Common error:
+for timestamp colum , put now() under its defaults values; TABLESPACE
+pg_default;
 
-422 Unprocessable Entity: This occurs when incorrect data or data types are sent to the server.
-User - DBMS - DB
-The DBMS connects with the DB engine and provides the response.
+ALTER TABLE IF EXISTS public.products OWNER to postgres;
 
-Data Types
+craete column by going to rright click to table, then view all rows then
+further give column properties via column properties then CONSTRAINTsave
+them via database optiion on table outputs.
 
-Numeric: int, decimal, precision
-Text: varchar, text
-Bool: boolean
-Sequence: array
-Add Limitations
+go to quert editor via right click db then query tool
 
-Add a primary key to get all entities, like a user ID.
-Make entries in a column unique with UNIQUE.
-Ensure that entries are not null via NOT NULL.
-PostgreSQL Configuration
-Connect via Command Line
-Connect to PostgreSQL using the command line:
+SELECT \* from products; SELECT \"Name\" from products; SELECT
+\"Name\",id from products; SELECT id AS products_id,\"Name\" from
+products limit 5; SELECT id AS products_id,\"Name\" from products where
+id = 1 ; SELECT \* from products WHERE inventory = 5; SELECT \* from
+products WHERE \"Name\" = \'TV\'; SELECT \* from products WHERE
+inventory \< 10; SELECT \* from products WHERE inventory != 0; SELECT \*
+from products WHERE inventory \> 0 AND \"Price\" \>100 ; SELECT \* from
+products WHERE inventory \> 0 OR \"Price\" \>100 ; SELECT \* from
+products WHERE \"Price\" \> 100 AND \"Price\" \<1000; SELECT \* from
+products WHERE id = 7 OR id =9 OR id=10 ; SELECT \* from products WHERE
+id IN (7,8,9); SELECT \* from products WHERE \"Name\" LIKE \'TV%\';
+SELECT \* from products WHERE \"Name\" NOT LIKE \'%e\'; SELECT \* from
+products ORDER BY \"Price\" ASC; SELECT \* from products ORDER BY
+inventory DESC, \"Price\" ASC ; SELECT \* from products ORDER BY
+timestamp ; SELECT \* from products WHERE \"Price\" \> 20 ORDER BY
+timestamp ; SELECT id AS products_id,\"Name\" from products LIMIT 5
+offset 2; INSERT INTO products (\"Name\",\"Price\",is_sale,inventory)
+VALUES(\'mouse\',4,true,58) returning id; INSERT INTO products
+(\"Name\",\"Price\",is_sale,inventory)
+VALUES(\'keyboard\',5,true,680),(\'table\',4,true,50) returning
+id,\"Name\"; DELETE FROM products WHERE id =10; DELETE FROM products
+WHERE id =11 RETURNING \*; DELETE FROM products WHERE inventory =0;
+UPDATE products SET \"Name\" = \'House\',\"Price\" = 1000000 WHERE id =
+7; UPDATE products SET is_sale = \'false\'WHERE id = 12 RETURNING \*;
+UPDATE products SET is_sale = \'true\' WHERE inventory \< 10 RETURNING
+\*;
 
-bash
-Copy code
-"C:\Program Files\PostgreSQL\15\bin\psql.exe" -U postgres
-Reset PostgreSQL Password
+connect db with python pip3 install psycopg2
 
-Open pg_hba.conf in a text editor with administrator privileges (e.g., Notepad) located at C:\Program Files\PostgreSQL\15\data\pg_hba.conf.
-Update the following lines to allow local connections without a password:
-sql
-Copy code
-local    all             all             127.0.0.1/32            trust
-host     all             all             127.0.0.1/32            trust
-host     all             all             ::1/128                 trust
-Restart PostgreSQL:
+this libraray gives column name RealDictCursor
 
-Press Win + R
+ORM=sqlalchemy code =\> orm =\> db pip3 install sqlalchemy
 
-Search for services.msc
+https://fastapi.tiangolo.com/tutorial/sql-databases/#install-sqlalchemy
+if using 2 @
 
-Restart the service named PostgreSQL-15
+SQLALCHEMY_DATABASE_URL =
+\"postgresql+psycopg2://postgres:Tubelight1%40@localhost/postgres\"
 
-Connect to the server again:
-bash
-Copy code
-"C:\Program Files\PostgreSQL\16\bin\psql.exe" -U postgres
-Reset the PostgreSQL password:
-sql
-Copy code
-ALTER USER postgres PASSWORD 'newpassword';
-Re-edit pg_hba.conf to secure the database again:
-bash
-Copy code
-local    all             all             127.0.0.1/32           scram-sha-256
-host     all             all             127.0.0.1/32           scram-sha-256
-host     all             all             ::1/128                scram-sha-256
-Connect to DB with New Password
-Go to DB schema, table and create a table named products:
+with sqlalchemy we cant modify column attribute or properties so need to
+use alembic Notepad
 
-name = character varying, not null
-price = integer, not null
-bigint and smallint = specify the bit of the value
-Create a Table in PostgreSQL
+In command prompt echo %MY_DB_URL%
 
-sql
-Copy code
-CREATE TABLE IF NOT EXISTS public.products
-(
-    "Name" character varying COLLATE pg_catalog."default" NOT NULL,
-    "Price" integer NOT NULL,
-    id integer NOT NULL DEFAULT nextval('products_id_seq'::regclass),
-    CONSTRAINT products_pkey PRIMARY KEY (id)
-)
-For the timestamp column, put now() under its default values.
+SQL Joins SELECT \* FROM post LEFT JOIN users ON post.user_id =users.id;
 
-Table Management in PostgreSQL
-After creating the table, manage columns and constraints through table properties.
+SELECT title, content,email FROM post LEFT JOIN users ON post.user_id
+=users.id; SELECT post.id,content,email FROM post LEFT JOIN users ON
+post.user_id =users.id; SELECT post.\*,content,email FROM post LEFT JOIN
+users ON post.user_id =users.id; SELECT users.id, count(\*) FROM post
+RIGHT JOIN users ON post.user_id =users.id group by users.id;
 
-Query Editor in PostgreSQL
-Open the query editor via right-clicking the DB and selecting "Query Tool".
-
-SQL Commands
-Basic SQL Commands for PostgreSQL
-sql
-Copy code
-SELECT * FROM products;
-SELECT "Name" FROM products;
-SELECT "Name", id FROM products;
-SELECT id AS products_id, "Name" FROM products LIMIT 5;
-SELECT id AS products_id, "Name" FROM products WHERE id = 1;
-SELECT * FROM products WHERE inventory = 5;
-SELECT * FROM products WHERE "Name" = 'TV';
-SELECT * FROM products WHERE inventory < 10;
-SELECT * FROM products WHERE inventory != 0;
-SELECT * FROM products WHERE inventory > 0 AND "Price" > 100;
-SELECT * FROM products WHERE inventory > 0 OR "Price" > 100;
-SELECT * FROM products WHERE "Price" > 100 AND "Price" < 1000;
-SELECT * FROM products WHERE id = 7 OR id = 9 OR id = 10;
-SELECT * FROM products WHERE id IN (7, 8, 9);
-SELECT * FROM products WHERE "Name" LIKE 'TV%';
-SELECT * FROM products WHERE "Name" NOT LIKE '%e';
-SELECT * FROM products ORDER BY "Price" ASC;
-SELECT * FROM products ORDER BY inventory DESC, "Price" ASC;
-SELECT * FROM products ORDER BY timestamp;
-SELECT * FROM products WHERE "Price" > 20 ORDER BY timestamp;
-SELECT id AS products_id, "Name" FROM products LIMIT 5 OFFSET 2;
-INSERT INTO products ("Name", "Price", is_sale, inventory) VALUES ('mouse', 4, true, 58) RETURNING id;
-INSERT INTO products ("Name", "Price", is_sale, inventory) VALUES ('keyboard', 5, true, 680), ('table', 4, true, 50) RETURNING id, "Name";
-DELETE FROM products WHERE id = 10;
-DELETE FROM products WHERE id = 11 RETURNING *;
-DELETE FROM products WHERE inventory = 0;
-UPDATE products SET "Name" = 'House', "Price" = 1000000 WHERE id = 7;
-UPDATE products SET is_sale = 'false' WHERE id = 12 RETURNING *;
-UPDATE products SET is_sale = 'true' WHERE inventory < 10 RETURNING *;
-Connecting to PostgreSQL with Python
-Install psycopg2
-
-bash
-Copy code
-pip3 install psycopg2
-This library provides the RealDictCursor to handle query results.
-
-Using SQLAlchemy ORM
-Install SQLAlchemy
-
-bash
-Copy code
-pip3 install sqlalchemy
-SQLAlchemy Connection String
-Configure the SQLAlchemy connection string in your application:
-
-python
-Copy code
-SQLALCHEMY_DATABASE_URL = "postgresql+psycopg2://postgres:Tubelight1%40@localhost/postgres"
-If you're using alembic for migrations, note that SQLAlchemy can't modify column attributes directly; you must use Alembic for that purpose.
-
-SQL Joins
-Example SQL join commands:
-
-sql
-Copy code
-SELECT * FROM post LEFT JOIN users ON post.user_id = users.id;
-SELECT title, content, email FROM post LEFT JOIN users ON post.user_id = users.id;
-SELECT post.id, content, email FROM post LEFT JOIN users ON post.user_id = users.id;
-SELECT post.*, content, email FROM post LEFT JOIN users ON post.user_id = users.id;
-SELECT users.id, count(*) FROM post RIGHT JOIN users ON post.user_id = users.id GROUP BY users.id;
-SELECT users.id, count(post.id) FROM post RIGHT JOIN users ON post.user_id = users.id GROUP BY users.id;
-SELECT users.id, users.email, count(post.id) AS user_post_count FROM post RIGHT JOIN users ON post.user_id = users.id GROUP BY users.id;
-Running the Application
-Environment Variables
-Set your environment variables using the command prompt:
-
-bash
-Copy code
-echo %MY_DB_URL%
-Follow these instructions carefully to set up your FastAPI application with PostgreSQL. Make sure to manage dependencies and configurations correctly to avoid any errors during the setup process.
-
-sql
-Copy code
-
-This `README.md` file includes all the setup instructions and SQL commands you provided. You can copy and paste it 
+SELECT users.id,count(post.id) FROM post RIGHT JOIN users ON
+post.user_id =users.id group by users.id; SELECT
+users.id,users.email,count(post.id) as user_post_count FROM post RIGHT
+JOIN users ON post.user_id =users.id group by users.id;
