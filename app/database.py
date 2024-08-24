@@ -2,7 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-SQLALCHEMY_DATABASE_URL = "postgresql+psycopg2://postgres:Tubelight1%40@localhost/postgres"
+SQLALCHEMY_DATABASE_URL = "postgresql+psycopg2://postgres:light1%40@localhost/postgres"
 
 
 
