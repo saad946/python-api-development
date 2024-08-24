@@ -32,7 +32,7 @@ add primary key to get all entities, like user id.
 make entry of column uniqe with UNIQUE
 make it sure that entries is not null via NOT NULL
 
-
+## Reset Password
 connect via cmd:
 "C:\Program Files\PostgreSQL\15\bin\psql.exe" -U postgres
 
@@ -64,7 +64,7 @@ name = character varrying, not null
 price = integer, not null
 bigint and small int = tell the bit of the value
 
-
+## SQL
 -- Table: public.products
 
 -- DROP TABLE IF EXISTS public.products;
@@ -88,6 +88,8 @@ craete column by going to rright click to table, then view all rows
 then further give column properties via column properties then CONSTRAINTsave them via database optiion on table outputs.
 
 go to quert editor via right click db then query tool
+
+## SQL Commands
 
 SELECT * from products;
 SELECT "Name" from products;
@@ -119,11 +121,12 @@ UPDATE products SET "Name" = 'House',"Price" = 1000000 WHERE id = 7;
 UPDATE products SET is_sale = 'false'WHERE id = 12 RETURNING *;
 UPDATE products SET is_sale = 'true' WHERE inventory < 10 RETURNING *;
 
-connect db with python
+## connect db with python
 pip3 install psycopg2
 
 this libraray gives column name RealDictCursor
 
+## ORM
 ORM=sqlalchemy
 code => orm => db
 pip3 install sqlalchemy
@@ -135,11 +138,10 @@ SQLALCHEMY_DATABASE_URL = "postgresql+psycopg2://postgres:Tubelight1%40@localhos
 
 with sqlalchemy we cant modify column attribute or properties so need to use alembic Notepad
 
-In command prompt
-echo %MY_DB_URL%
 
 
-SQL Joins
+
+## SQL Joins
 SELECT * FROM post LEFT JOIN users ON post.user_id =users.id;
 
 SELECT title, content,email FROM post LEFT JOIN users ON post.user_id =users.id;
